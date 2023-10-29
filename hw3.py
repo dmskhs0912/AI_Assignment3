@@ -1,6 +1,6 @@
 import copy, queue
 
-def standardize_variables(nonstandard_rules):
+def standardize_variables(nonstandard_rules): 
     '''
     @param nonstandard_rules (dict) - dict from ruleIDs to rules
         Each rule is a dict:
@@ -8,23 +8,42 @@ def standardize_variables(nonstandard_rules):
         rule['consequent'] contains the rule consequent (a proposition).
    
     @return standardized_rules (dict) - an exact copy of nonstandard_rules,
-        except that the antecedents and consequent of every rule have been changed
-        to replace the word "something" with some variable name that is
+        except that the antecedents and consequent of every rule have been changed         something을 변수명으로 고친 것 -> standardized_rules. 
+        to replace the word "something" with some variable name that is                   변수 명은 유일해야함. 다른 rule에 share되면 안됨.
         unique to the rule, and not shared by any other rule.
-    @return variables (list) - a list of the variable names that were created.
+    @return variables (list) - a list of the variable names that were created.            생성된 변수명 list. rule에서 사용되는 변수명만 포함.
         This list should contain only the variables that were used in rules.
     '''
-    raise RuntimeError("You need to write this part!")
+    standardized_rules = copy.deepcopy(nonstandard_rules) # deepcopy를 이용해 rules 복사
+    variables = []
+    numVar = 0 # 변수 명 뒤에 붙을 수
+    for key, rule in standardized_rules.items() : # 각 rule에 대해 반복.
+        for antecedent in rule['antecedents'] : # 각 antecedent에 대해 반복
+            for i, value in enumerate(antecedent) :
+                if value == "something" or value == "someone" : # something/someone이 있으면 x0001과 같은 변수명으로 교체. 
+                    numVar += 1
+                    antecedent[i] = "x" + f"{numVar:04}" # f-string을 사용해 문자열 포맷팅. 뒤에 숫자를 4자리로 고정. 빈 자리는 0으로 채우기.
+        for i, value in enumerate(rule['consequent']) : # consequent에 대해서도 변수명 교체
+            if value == "something" or value == "someone" :
+                numVar += 1
+                rule['consequent'][i] = "x" + f"{numVar:04}"
+    
+    for i in range(numVar) :
+        if numVar == 0 : break
+        if i == 0 : continue
+        variables.append("x"+f"{i:04}")
+    
+    print(standardized_rules, variables)
     return standardized_rules, variables
 
 def unify(query, datum, variables):
     '''
     @param query: proposition that you're trying to match.
-      The input query should not be modified by this function; consider deepcopy.
+      The input query should not be modified by this function; consider deepcopy.       query 바뀌면 안됨!! -> deepcopy 사용 고려
     @param datum: proposition against which you're trying to match the query.
-      The input datum should not be modified by this function; consider deepcopy.
+      The input datum should not be modified by this function; consider deepcopy.       datum 바뀌면 안됨!! -> deepcopy 사용 고려
     @param variables: list of strings that should be considered variables.
-      All other strings should be considered constants.
+      All other strings should be considered constants.                                 이외의 문자열은 constant로 생각해야함.
     
     Unification succeeds if (1) every variable x in the unified query is replaced by a 
     variable or constant from datum, which we call subs[x], and (2) for any variable y
@@ -42,12 +61,15 @@ def unify(query, datum, variables):
     unify(['x', 'eats', 'y', False], ['a', 'eats', 'b', False], ['x','y','a','b'])
       unification = [ 'a', 'eats', 'b', False ]
       subs = { "x":"a", "y":"b" }
+
     unify(['bobcat','eats','y',True],['a','eats','squirrel',True], ['x','y','a','b'])
       unification = ['bobcat','eats','squirrel',True]
       subs = { 'a':'bobcat', 'y':'squirrel' }
+
     unify(['x','eats','x',True],['a','eats','a',True],['x','y','a','b'])
       unification = ['a','eats','a',True]
       subs = { 'x':'a' }
+
     unify(['x','eats','x',True],['a','eats','bobcat',True],['x','y','a','b'])
       unification = ['bobcat','eats','bobcat',True],
       subs = {'x':'a', 'a':'bobcat'}
@@ -55,6 +77,7 @@ def unify(query, datum, variables):
       ['a','eats','a',True].  Then, later, when the 'a':'bobcat' substitution is 
       detected, the query is changed to ['bobcat','eats','bobcat',True], which 
       is the value returned as the answer.
+
     unify(['a','eats','bobcat',True],['x','eats','x',True],['x','y','a','b'])
       unification = ['bobcat','eats','bobcat',True],
       subs = {'a':'x', 'x':'bobcat'}
@@ -62,6 +85,7 @@ def unify(query, datum, variables):
       ['x','eats','bobcat',True].  Then, later, when the 'x':'bobcat' substitution 
       is detected, the query is changed to ['bobcat','eats','bobcat',True], which is 
       the value returned as the answer.
+
     unify([...,True],[...,False],[...]) should always return None, None, regardless of the 
       rest of the contents of the query or datum.
     '''
@@ -76,11 +100,11 @@ def apply(rule, goals, variables):
       This function should not modify goals; consider deepcopy.
     @param variables: list of strings that should be treated as variables
 
-    Rule application succeeds if the rule's consequent can be unified with any one of the goals.
+    Rule application succeeds if the rule's consequent can be unified with any one of the goals.    rule의 결론이 goal중의 하나로 unify 될 수 있는가?
     
     @return applications: a list, possibly empty, of the rule applications that
        are possible against the present set of goals.
-       Each rule application is a copy of the rule, but with both the antecedents 
+       Each rule application is a copy of the rule, but with both the antecedents          변수 치환으로 unify한 상태. 전제 -> 결론
        and the consequent modified using the variable substitutions that were
        necessary to unify it to one of the goals. Note that this might require 
        multiple sequential substitutions, e.g., converting ('x','eats','squirrel',False)

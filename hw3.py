@@ -33,7 +33,7 @@ def standardize_variables(nonstandard_rules):
         if i == 0 : continue
         variables.append("x"+f"{i:04}")
     
-    print(standardized_rules, variables)
+    #print(standardized_rules, variables)
     return standardized_rules, variables
 
 def unify(query, datum, variables):
@@ -89,7 +89,39 @@ def unify(query, datum, variables):
     unify([...,True],[...,False],[...]) should always return None, None, regardless of the 
       rest of the contents of the query or datum.
     '''
-    raise RuntimeError("You need to write this part!")
+    copied_query = copy.deepcopy(query)
+    copied_datum = copy.deepcopy(datum)
+    subs = {}
+    if len(query) != len(datum) : return None, None # 길이가 다르면 unify 불가.
+    if query[-1] != query[-1] : return None, None # True, False 간의 unify는 불가.
+
+
+    while True : # unify_flag가 false가 되면 while문 탈출. for문에서 아무 내용도 바뀌지 않으면 unify_flag가 false가 됨.
+        unify_flag = False
+        for q, d in zip(copied_query, copied_datum) : # query와 datum의 각 원소끼리 묶어 비교
+            if q != d and q not in variables and d not in variables : return None, None # constant가 서로 다른 경우 unify 불가.
+            elif q != d and q in variables and d not in variables :  # q가 변수, d가 상수 인 경우
+                unify_flag = True
+                subs[q] = d
+                for i, value in enumerate(copied_query) :
+                    if value == q : copied_query[i] = d
+                break
+            elif q != d and q not in variables and d in variables : # q가 상수, d가 변수 인 경우
+                unify_flag = True
+                subs[d] = q
+                for i, value in enumerate(copied_datum) :
+                    if value == d : copied_datum[i] = q
+                break
+            elif q != d and q in variables and d in variables : # q와 d 모두 변수인 경우 query를 datum에 맞춤
+                unify_flag = True
+                subs[q] = d
+                for i, value in enumerate(copied_query) :
+                    if value == q : copied_query[i] = d
+                break
+        if not unify_flag : break
+
+    unification = copied_query
+    #print(unification)
     return unification, subs
 
 def apply(rule, goals, variables):

@@ -1,0 +1,357 @@
+{
+    "World_000": {
+        "rules": {
+            "triple1": {
+                "antecedents": [],
+                "consequent": [ "bald eagle", "is", "nice", true ]
+            },
+            "triple2": {
+                "antecedents": [],
+                "consequent": [ "squirrel", "visits", "bald eagle", true ]
+            },
+            "rule1": {
+                "antecedents": [
+                    [ "something", "needs", "bald eagle", true ],
+                    [ "something", "is", "cold", false ]
+                ],
+                "consequent": [ "something", "visits", "bald eagle", true ]
+            },
+            "rule2": {
+                "antecedents": [
+                    [ "something", "is", "nice", true ],
+                    [ "something", "eats", "squirrel", false ]
+                ],
+                "consequent": ["squirrel", "eats", "bald eagle", true ]
+            },
+            "rule3": {
+                "antecedents": [
+                    [ "something", "is", "green", true ]
+                ],
+                "consequent": [ "something", "is", "rough", true ]
+            },
+            "rule4": {
+                "antecedents": [
+                    [ "something", "eats", "squirrel", true ],
+                    [ "something", "needs", "bald eagle", true ]
+                ],
+                "consequent": [ "something", "needs", "squirrel", false ]
+            },
+            "rule5": {
+                "antecedents": [
+                    [ "something", "eats", "squirrel", true ]
+                ],
+                "consequent": [ "squirrel", "needs", "bald eagle", true ]
+            },
+            "rule6": {
+                "antecedents": [
+                    [ "bald eagle", "eats", "squirrel", true ],
+                    [ "something", "eats", "bald eagle", false ]
+                ],
+                "consequent": [ "bald eagle", "visits", "squirrel", true ]
+            },
+            "rule7": {
+                "antecedents": [
+                    [ "squirrel", "eats", "bald eagle", true ],
+                    [ "bald eagle", "visits", "squirrel", false ]
+                ],
+                "consequent": [ "bald eagle", "needs", "squirrel", true ]
+            },
+            "rule8": {
+                "antecedents": [
+                    [ "squirrel", "is", "rough", true ],
+                    [ "bald eagle", "needs", "squirrel", false ]
+                ],
+                "consequent": [ "squirrel", "needs", "bald eagle", true ]
+            }
+        },
+        "questions": {
+            "Q1": {
+                "query": [ "squirrel", "visits", "bald eagle", true ],
+                "answer": true
+            },
+            "Q2": {
+                "query": [ "bald eagle", "is", "nice", false ],
+                "answer": false
+            },
+            "Q3": {
+                "query": [ "squirrel", "eats", "bald eagle", true ],
+                "answer": "NAF"
+            },
+            "Q4": {
+                "query": [ "squirrel", "eats", "bald eagle", false ],
+                "answer": "NAF"
+            },
+            "Q5": {
+                "query": [ "bald eagle", "needs", "squirrel", true ],
+                "answer": "NAF"
+            },
+            "Q6": {
+                "query": [ "bald eagle", "needs", "squirrel", false ],
+                "answer": "NAF"
+            },
+            "Q7": {
+                "query": [ "bald eagle", "visits", "bald eagle", false ],
+                "answer": "CWA"
+            },
+            "Q8": {
+                "query": [ "bald eagle", "visits", "squirrel", true ],
+                "answer": "CWA"
+            },
+            "Q9": {
+                "query": [ "squirrel", "is", "rough", false ],
+                "answer": "CWA"
+            },
+            "Q10": {
+                "query": [ "squirrel", "visits", "squirrel", true ],
+                "answer": "CWA"
+            },
+            "Q11": {
+                "query": [ "squirrel", "is", "green", false ],
+                "answer": "CWA"
+            },
+            "Q12": {
+                "query": [ "squirrel", "needs", "squirrel", true ],
+                "answer": "CWA"
+            }
+        }
+    },
+    "World_001": {
+        "rules": {
+            "triple1": {
+                "antecedents": [],
+                "consequent": [ "bald eagle", "eats", "tiger", true ]
+            },
+            "triple2": {
+                "antecedents": [],
+                "consequent": [ "bald eagle", "is", "blue", true ]
+            },
+            "triple3": {
+                "antecedents": [],
+                "consequent": [ "bald eagle", "is", "green", true ]
+            },
+            "triple4": {
+                "antecedents": [],
+                "consequent": [ "bald eagle", "is", "kind", true ]
+            },
+            "triple5": {
+                "antecedents": [],
+                "consequent": [ "bald eagle", "is", "rough", true ]
+            },
+            "triple6": {
+                "antecedents": [],
+                "consequent": [ "bald eagle", "sees", "tiger", true ]
+            },
+            "triple7": {
+                "antecedents": [],
+                "consequent": [ "bald eagle", "visits", "tiger", true ]
+            },
+            "triple8": {
+                "antecedents": [],
+                "consequent": [ "tiger", "eats", "bald eagle", true ]
+            },
+            "triple9": {
+                "antecedents": [],
+                "consequent": [ "tiger", "is", "blue", true ]
+            },
+            "triple10": {
+                "antecedents": [],
+                "consequent": [ "tiger", "is", "green", true ]
+            },
+            "triple11": {
+                "antecedents": [],
+                "consequent": [ "tiger", "is", "kind", true ]
+            },
+            "triple12": {
+                "antecedents": [],
+                "consequent": [ "tiger", "is", "rough", true ]
+            },
+            "triple13": {
+                "antecedents": [],
+                "consequent": [ "tiger", "is", "young", true ]
+            },
+            "triple14": {
+                "antecedents": [],
+                "consequent": [ "tiger", "sees", "bald eagle", true ]
+            },
+            "triple15": {
+                "antecedents": [],
+                "consequent": [ "tiger", "visits", "bald eagle", true ]
+            },
+            "rule1": {
+                "antecedents": [
+                    [ "something", "eats", "tiger", true ]
+                ],
+                "consequent": [ "something", "sees", "tiger", true ]
+            },
+            "rule2": {
+                "antecedents": [
+                    [ "something", "visits", "bald eagle", true ]
+                ],
+                "consequent": [ "something", "eats", "tiger", true ]
+            },
+            "rule3": {
+                "antecedents": [
+                    [ "something", "is", "rough", true ]
+                ],
+                "consequent": [ "something", "eats", "tiger", true ]
+            }
+        },
+        "questions": {
+            "Q1": {
+                "query": [ "tiger", "is", "blue", true ],
+                "answer": true
+            },
+            "Q2": {
+                "query": [ "tiger", "is", "rough", false ],
+                "answer": false
+            },
+            "Q3": {
+                "query": [ "tiger", "eats", "tiger", true ],
+                "answer": true
+            },
+            "Q4": {
+                "query": [ "tiger", "eats", "tiger", false ],
+                "answer": false
+            },
+            "Q5": {
+                "query": [ "tiger", "sees", "tiger", true ],
+                "answer": true
+            },
+            "Q6": {
+                "query": [ "tiger", "sees", "tiger", false ],
+                "answer": false
+            },
+            "Q7": {
+                "query": [ "tiger", "visits", "tiger", false ],
+                "answer": "CWA"
+            },
+            "Q8": {
+                "query": [ "bald eagle", "eats", "bald eagle", true ],
+                "answer": "CWA"
+            },
+            "Q9": {
+                "query": [ "bald eagle", "is", "young", false ],
+                "answer": "CWA"
+            },
+            "Q10": {
+                "query": [ "bald eagle", "visits", "bald eagle", true ],
+                "answer": "CWA"
+            }
+        }
+    },
+    "World_002": {
+        "rules": {
+            "triple1": {
+                "antecedents": [],
+                "consequent": [ "Anne", "is", "cold", true ]
+            },
+            "triple2": {
+                "antecedents": [],
+                "consequent": [ "Anne", "is", "red", true ]
+            },
+            "triple3": {
+                "antecedents": [],
+                "consequent": [ "Anne", "is", "round", true ]
+            },
+            "triple4": {
+                "antecedents": [],
+                "consequent": [ "Charlie", "is", "nice", true ]
+            },
+            "triple5": {
+                "antecedents": [],
+                "consequent": [ "Charlie", "is", "red", true ]
+            },
+            "triple6": {
+                "antecedents": [],
+                "consequent": [ "Dave", "is", "quiet", true ]
+            },
+            "triple7": {
+                "antecedents": [],
+                "consequent": [ "Dave", "is", "red", true ]
+            },
+            "triple8": {
+                "antecedents": [],
+                "consequent": [ "Dave", "is", "white", true ]
+            },
+            "triple9": {
+                "antecedents": [],
+                "consequent": [ "Fiona", "is", "kind", true ]
+            },
+            "triple10": {
+                "antecedents": [],
+                "consequent": [ "Fiona", "is", "quiet", true ]
+            },
+            "triple11": {
+                "antecedents": [],
+                "consequent": [ "Fiona", "is", "red", true ]
+            },
+            "triple12": {
+                "antecedents": [],
+                "consequent": [ "Fiona", "is", "white", true ]
+            },
+            "rule1": {
+                "antecedents": [
+                    [ "Fiona", "is", "nice", true ]
+                ],
+                "consequent": [ "Fiona", "is", "round", true ]
+            },
+            "rule2": {
+                "antecedents": [
+                    [ "something", "is", "white", true ],
+                    [ "something", "is", "kind", true ]
+                ],
+                "consequent": [ "something", "is", "nice", true ]
+            }
+        },
+        "questions": {
+            "Q1": {
+                "query": [ "Charlie", "is", "nice", true ],
+                "answer": true
+            },
+            "Q2": {
+                "query": [ "Dave", "is", "quiet", false ],
+                "answer": false
+            },
+            "Q3": {
+                "query": [ "Fiona", "is", "nice", true ],
+                "answer": true
+            },
+            "Q4": {
+                "query": [ "Fiona", "is", "nice", false ],
+                "answer": false
+            },
+            "Q5": {
+                "query": [ "Fiona", "is", "round", true ],
+                "answer": true
+            },
+            "Q6": {
+                "query": [ "Fiona", "is", "round", false ],
+                "answer": false
+            },
+            "Q7": {
+                "query": [ "Dave", "is", "nice", false ],
+                "answer": "CWA"
+            },
+            "Q8": {
+                "query": [ "Anne", "is", "nice", true ],
+                "answer": "CWA"
+            },
+            "Q9": {
+                "query": [ "Dave", "is", "round", false ],
+                "answer": "CWA"
+            },
+            "Q10": {
+                "query": [ "Anne", "is", "white", true ],
+                "answer": "CWA"
+            },
+            "Q11": {
+                "query": [ "Charlie", "is", "quiet", false ],
+                "answer": "CWA"
+            },
+            "Q12": {
+                "query": [ "Anne", "is", "kind", true ],
+                "answer": "CWA"
+            }
+        }
+    }
+}

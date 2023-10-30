@@ -36,7 +36,7 @@ def standardize_variables(nonstandard_rules):
         if numVar == 0 : break
         variables.append("x"+f"{i:04}")
     
-    print(standardized_rules, variables)
+    #print(standardized_rules, variables)
     return standardized_rules, variables
 
 def unify(query, datum, variables):

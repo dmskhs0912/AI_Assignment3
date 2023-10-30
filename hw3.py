@@ -17,23 +17,26 @@ def standardize_variables(nonstandard_rules):
     standardized_rules = copy.deepcopy(nonstandard_rules) # deepcopy를 이용해 rules 복사
     variables = []
     numVar = 0 # 변수 명 뒤에 붙을 수
+    flag = False
     for key, rule in standardized_rules.items() : # 각 rule에 대해 반복.
+        if flag is True : # 이전 rule에서 교체가 이루어졌다면 numVar 증가
+            numVar += 1
+            flag = False
         for antecedent in rule['antecedents'] : # 각 antecedent에 대해 반복
             for i, value in enumerate(antecedent) :
                 if value == "something" or value == "someone" : # something/someone이 있으면 x0001과 같은 변수명으로 교체. 
-                    numVar += 1
+                    flag = True
                     antecedent[i] = "x" + f"{numVar:04}" # f-string을 사용해 문자열 포맷팅. 뒤에 숫자를 4자리로 고정. 빈 자리는 0으로 채우기.
         for i, value in enumerate(rule['consequent']) : # consequent에 대해서도 변수명 교체
             if value == "something" or value == "someone" :
-                numVar += 1
+                flag = True
                 rule['consequent'][i] = "x" + f"{numVar:04}"
     
     for i in range(numVar) :
         if numVar == 0 : break
-        if i == 0 : continue
         variables.append("x"+f"{i:04}")
     
-    #print(standardized_rules, variables)
+    print(standardized_rules, variables)
     return standardized_rules, variables
 
 def unify(query, datum, variables):

@@ -14,6 +14,8 @@ if __name__ == "__main__":
         total = 0
 
         START = time.time()
+        hw3.apply({'antecedents':[['x','is','nice',True],['x','is','hungry',False]], 'consequent':['x','eats','squirrel',False]}, 
+      [['bobcat','eats','squirrel',False], ['bobcat','visits','squirrel',True], ['bald eagle','eats','squirrel',False]], ['x','y','a','b'])
 
         for qid, question in questions.items():
             total += 1

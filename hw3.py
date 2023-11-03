@@ -124,6 +124,17 @@ def unify(query, datum, variables):
     #print(unification)
     return unification, subs
 
+
+def substitution(proposition, subs) :
+    copied_prop = copy.deepcopy(proposition)
+    for var1, var2 in subs.items() :
+        for i in range(3) :
+            if var1 == copied_prop[i] :
+                copied_prop[i] = subs[var1]
+    return copied_prop
+        
+        
+
 def apply(rule, goals, variables):
     '''
     @param rule: A rule that is being tested to see if it can be applied
@@ -186,7 +197,27 @@ def apply(rule, goals, variables):
         ['bald eagle','is','hungry',False]
       ]
     '''
-    raise RuntimeError("You need to write this part!")
+
+    copied_rule = copy.deepcopy(rule)
+    copied_goals = copy.deepcopy(goals)
+    applications = []
+    goalsets = []
+    i = 0
+
+    for goal in copied_goals :
+        unification, subs = unify(copied_rule['consequent'], goal, variables)
+        if unification is not None :
+            applications.append({'antecedents':[], 'consequent':None})
+            applications[i]['consequent'] = unification
+            goalsets.append(copied_goals)
+            goalsets[i].remove(goal)
+            for ante in copied_rule['antecedents'] :
+                sub_ante = substitution(ante, subs)
+                applications[i]['antecedents'].append(sub_ante)
+                goalsets[i].append(sub_ante)
+            i += 1
+    print(applications)
+    print(goalsets)
     return applications, goalsets
 
 def backward_chain(query, rules, variables):

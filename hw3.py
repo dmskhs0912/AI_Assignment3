@@ -6,9 +6,6 @@ def standardize_variables(nonstandard_rules):
     numVar = 0 # 변수 명 뒤에 붙을 수
     flag = False
     for key, rule in standardized_rules.items() : # 각 rule에 대해 반복.
-        if flag is True : # 이전 rule에서 교체가 이루어졌다면 numVar 증가
-            numVar += 1
-            flag = False
         for antecedent in rule['antecedents'] : # 각 antecedent에 대해 반복
             for i, value in enumerate(antecedent) :
                 if value == "something" or value == "someone" : # something/someone이 있으면 x0001과 같은 변수명으로 교체. 
@@ -18,12 +15,14 @@ def standardize_variables(nonstandard_rules):
             if value == "something" or value == "someone" :
                 flag = True
                 rule['consequent'][i] = "x" + f"{numVar:04}"
+        if flag is True : # 교체가 이루어졌다면 numVar 증가
+            numVar += 1
+            flag = False
     
-    for i in range(numVar) :
+    for i in range(numVar) : # 변수의 수만큼 variables에 변수명 추가
         if numVar == 0 : break
         variables.append("x"+f"{i:04}")
     
-    #print(standardized_rules, variables)
     return standardized_rules, variables
 
 def unify(query, datum, variables):
@@ -59,7 +58,6 @@ def unify(query, datum, variables):
         if not unify_flag : break
 
     unification = copied_query
-    #print(unification)
     return unification, subs
 
 
@@ -94,24 +92,85 @@ def apply(rule, goals, variables):
             i += 1
     return applications, goalsets
 
-def backward_chain(query, rules, variables):
-    '''
-    @param query: a proposition, you want to know if it is true
-    @param rules: dict mapping from ruleIDs to rules
-    @param variables: list of strings that should be treated as variables
+import copy
 
-    @return proof (list): a list of rule applications
-      that, when read in sequence, conclude by proving the truth of the query.
-      If no proof of the query was found, you should return proof=None.
-    '''
-    goalset_stack = [[query]]
-    
-    while len(goalset_stack) != 0 : 
-        goalset = goalset_stack.pop()
-        for rid, rule in rules :
-            application, newgoalset = apply(rule, goalset, variables)
-            if len(application) == 0 : continue
-            else :
-                for goals in newgoalset :
-                    
+def backward_chain(query, rules, variables, proof=None):
+    if proof is None:
+        proof = []
+
+    # Check if the query is already proved by the given facts (base rules with no antecedents)
+    for rule_id, rule in rules.items():
+        if not rule['antecedents'] and rule['consequent'] == query:  # it's a fact
+            proof.append(rule)
+            return proof
                 
+
+    # Try to apply rules to prove the query
+    for rule_id, rule in rules.items():
+        applications, goalsets = apply(rule, [query], variables)
+        
+        for application, new_goals in zip(applications, goalsets):
+            # If there are no more goals to prove, we've found a proof
+            if not new_goals:
+                proof.append(application)
+                return proof
+            
+            # If there are still goals left, we need to prove each of them
+            for new_goal in new_goals:
+                subproof = backward_chain(new_goal, rules, variables, proof)
+                if subproof is not None:  # if a subproof is found
+                    proof.append(application)
+                    return proof
+    
+    # If no proof is found for the query
+    return None
+
+
+
+'''
+def backward_chain(query, rules, variables):
+    # 기본 사례: query가 비어 있거나 None이면, 증명이 없음 (query가 이미 참이거나 주어진 query가 없음).
+    if not query:
+        return []
+
+    # 목표를 추적하기 위해 스택을 초기화합니다 (LIFO).
+    goal_stack = [query]
+    # 규칙 적용 순서를 수집하기 위한 리스트를 초기화합니다.
+    proof = []
+
+    # 처리할 목표가 있을 동안.
+    while goal_stack:
+        # 스택에서 목표를 하나 꺼냅니다.
+        current_goal = goal_stack.pop()
+
+        # 현재 목표에 규칙을 적용해 봅니다.
+        applicable = False
+        for rule_id, rule in rules.items():
+            applications, newgoalsets = apply(rule, [current_goal], variables)
+
+            # 규칙이 적용될 수 있다면, 첫 번째 적용 사례를 선택합니다 (간단함을 위해).
+            if applications:
+                applicable = True
+                # 현재 적용 가능한 규칙으로 증명 순서가 추가됩니다.
+                proof.append(applications[0])
+                # 새로운 하위 목표로 규칙의 선행조건을 스택에 추가합니다.
+                for antecedent in applications[0]['antecedents']:
+                    goal_stack.append(antecedent)
+                # 첫 번째 적용 가능한 규칙이 찾아지고 적용된 후에 중단합니다.
+                break
+
+        # 적용 가능한 규칙을 찾지 못하면, 현재 목표를 증명할 수 없습니다.
+        if not applicable:
+            return None  # 증명 실패.
+
+    # 모든 목표가 처리되었고 스택이 비어 있으면, 수집된 증명을 반환합니다.
+    return proof
+'''
+
+
+
+
+
+
+
+    

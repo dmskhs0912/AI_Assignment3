@@ -19,7 +19,7 @@ if __name__ == "__main__":
             total += 1
             proof = hw3.backward_chain(question['query'], rules, variables)
             if (question['answer'] in (False, 'NAF', 'CWA') and proof is None) or (question['answer'] and proof):
-                print(qid, "Correct")
+                #print(qid, "Correct")
                 score += 1
 
         END = time.time()

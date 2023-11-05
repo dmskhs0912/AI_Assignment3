@@ -14,13 +14,12 @@ if __name__ == "__main__":
         total = 0
 
         START = time.time()
-        hw3.apply({'antecedents':[['x','is','nice',True],['x','is','hungry',False]], 'consequent':['x','eats','squirrel',False]}, 
-      [['bobcat','eats','squirrel',False], ['bobcat','visits','squirrel',True], ['bald eagle','eats','squirrel',False]], ['x','y','a','b'])
-
+        
         for qid, question in questions.items():
             total += 1
             proof = hw3.backward_chain(question['query'], rules, variables)
             if (question['answer'] in (False, 'NAF', 'CWA') and proof is None) or (question['answer'] and proof):
+                print(qid, "Correct")
                 score += 1
 
         END = time.time()

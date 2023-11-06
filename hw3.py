@@ -62,115 +62,55 @@ def unify(query, datum, variables):
 
 
 def substitution(proposition, subs) :
-    copied_prop = copy.deepcopy(proposition)
-    for var1, var2 in subs.items() :
+    copied_prop = copy.deepcopy(proposition) # deepcopy 사용해 원본 수정 방지
+    for var1, var2 in subs.items() : 
         for i in range(3) :
-            if var1 == copied_prop[i] :
+            if var1 == copied_prop[i] : # subs 딕셔너리의 key와 같은 변수를 찾은 경우 치환 적용
                 copied_prop[i] = subs[var1]
     return copied_prop
         
         
 
 def apply(rule, goals, variables):
-    copied_rule = copy.deepcopy(rule)
+    copied_rule = copy.deepcopy(rule) # deepcopy 사용으로 원본 수정 방지
     copied_goals = copy.deepcopy(goals)
     applications = []
     goalsets = []
-    i = 0
+    i = 0 # 적용되는 goal에 대해 application index 처리를 위한 변수 
 
-    for goal in copied_goals :
-        unification, subs = unify(copied_rule['consequent'], goal, variables)
-        if unification is not None :
+    for goal in copied_goals : # goals의 각 goal에 대해 적용 가능한지 확인 
+        unification, subs = unify(copied_rule['consequent'], goal, variables) # rule의 consequent와 goal이 unify 가능 --> apply 가능.
+        if unification is not None : # None이 아닌 경우라면 적용 가능.
             applications.append({'antecedents':[], 'consequent':None})
-            applications[i]['consequent'] = unification
-            goalsets.append(copy.deepcopy(goals))
-            goalsets[i].remove(goal)
+            applications[i]['consequent'] = unification  # goal과도 동일하다.
+            goalsets.append(copy.deepcopy(goals))  # 뒤에 remove 메소드 사용으로 인해 goals가 수정될 수 있으므로 deepcopy 사용.
+            goalsets[i].remove(goal)  # apply된 goal은 new goal set에서 제외하고 antecedent를 넣는다. 
             for ante in copied_rule['antecedents'] :
-                sub_ante = substitution(ante, subs)
+                sub_ante = substitution(ante, subs)  # unify될 때 적용된 치환을 antecedent에도 적용 후 goalsets에 추가.
                 applications[i]['antecedents'].append(sub_ante)
                 goalsets[i].append(sub_ante)
             i += 1
     return applications, goalsets
 
-import copy
 
-def backward_chain(query, rules, variables, proof=None):
-    if proof is None:
-        proof = []
-
-    # Check if the query is already proved by the given facts (base rules with no antecedents)
-    for rule_id, rule in rules.items():
-        if not rule['antecedents'] and rule['consequent'] == query:  # it's a fact
-            proof.append(rule)
-            return proof
-                
-
-    # Try to apply rules to prove the query
-    for rule_id, rule in rules.items():
-        applications, goalsets = apply(rule, [query], variables)
-        
-        for application, new_goals in zip(applications, goalsets):
-            # If there are no more goals to prove, we've found a proof
-            if not new_goals:
-                proof.append(application)
-                return proof
-            
-            # If there are still goals left, we need to prove each of them
-            for new_goal in new_goals:
-                subproof = backward_chain(new_goal, rules, variables, proof)
-                if subproof is not None:  # if a subproof is found
-                    proof.append(application)
-                    return proof
-    
-    # If no proof is found for the query
-    return None
-
-
-
-'''
 def backward_chain(query, rules, variables):
-    # 기본 사례: query가 비어 있거나 None이면, 증명이 없음 (query가 이미 참이거나 주어진 query가 없음).
-    if not query:
-        return []
-
-    # 목표를 추적하기 위해 스택을 초기화합니다 (LIFO).
-    goal_stack = [query]
-    # 규칙 적용 순서를 수집하기 위한 리스트를 초기화합니다.
+    goal_stack = [query] # 목표 추적을 위한 스택
     proof = []
 
-    # 처리할 목표가 있을 동안.
-    while goal_stack:
-        # 스택에서 목표를 하나 꺼냅니다.
-        current_goal = goal_stack.pop()
+    while goal_stack: # 스택이 비어있지 않은 동안 반복
+        current_goal = goal_stack.pop() # goal을 하나 pop해서 해당 goal에 규칙들을 적용해본다.
 
-        # 현재 목표에 규칙을 적용해 봅니다.
         applicable = False
         for rule_id, rule in rules.items():
             applications, newgoalsets = apply(rule, [current_goal], variables)
-
-            # 규칙이 적용될 수 있다면, 첫 번째 적용 사례를 선택합니다 (간단함을 위해).
-            if applications:
+            if applications: # applications 리스트가 비어있지 않은 경우는 적용 가능한 경우
                 applicable = True
-                # 현재 적용 가능한 규칙으로 증명 순서가 추가됩니다.
-                proof.append(applications[0])
-                # 새로운 하위 목표로 규칙의 선행조건을 스택에 추가합니다.
-                for antecedent in applications[0]['antecedents']:
+                proof.append(applications[0]) # 적용된 rule을 proof로 추가함
+                for antecedent in applications[0]['antecedents']: # 적용된 rule의 antecedent를 goal stack에 추가해서 backward_chain을 구현
                     goal_stack.append(antecedent)
-                # 첫 번째 적용 가능한 규칙이 찾아지고 적용된 후에 중단합니다.
                 break
 
-        # 적용 가능한 규칙을 찾지 못하면, 현재 목표를 증명할 수 없습니다.
-        if not applicable:
-            return None  # 증명 실패.
+        if not applicable: # 만약 현재 목표에 대해 적용할 수 있는 rule이 없다면 증명할 수 없다. 
+            return None  
 
-    # 모든 목표가 처리되었고 스택이 비어 있으면, 수집된 증명을 반환합니다.
     return proof
-'''
-
-
-
-
-
-
-
-    
